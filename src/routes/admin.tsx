@@ -27,14 +27,15 @@ function AdminMasterDashboard() {
   const navigate = useNavigate();
 
   const isMaster = user?.email?.toLowerCase() === "ulfathai003@gmail.com";
+  const hasAccess = isMaster || role === "admin" || role === "super_admin";
 
   useEffect(() => {
-    if (!loading && (!user || role !== "admin")) {
+    if (!loading && (!user || !hasAccess)) {
       navigate({ to: "/login" });
     }
-  }, [user, role, loading, navigate, role]);
+  }, [user, role, loading, navigate, hasAccess]);
 
-  if (loading || role !== "admin") return <div className="grid place-items-center min-h-screen font-black uppercase italic text-red-600">Validating Super-Admin Authority...</div>;
+  if (loading || !hasAccess) return <div className="grid place-items-center min-h-screen font-black uppercase italic text-red-600">Validating Super-Admin Authority...</div>;
 
   return (
     <DashboardLayout>

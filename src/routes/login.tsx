@@ -69,6 +69,7 @@ function LoginPage() {
       if (!signInError) {
         setLoading(false);
         toast.success("Welcome back! Routing to your console…");
+        navigate({ to: "/dashboard" });
         return;
       }
 
