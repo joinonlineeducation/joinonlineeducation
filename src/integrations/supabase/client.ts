@@ -29,12 +29,21 @@ class RateLimiter {
 const dbLimiter = new RateLimiter(60); // 60 DB requests per minute
 const authLimiter = new RateLimiter(10); // 10 login/signup attempts per minute
 
+function cleanString(str: string | undefined): string | undefined {
+  if (!str) return undefined;
+  // Strip BOM (\uFEFF) and any non-ASCII / control characters that break fetch RequestInit headers
+  return str.replace(/[\uFEFF\u0000-\u001F\u007F-\u009F]/g, "").trim();
+}
+
 function resolveConfig() {
-  const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined) || process.env.SUPABASE_URL;
-  const key =
+  const rawUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined) || process.env.SUPABASE_URL;
+  const rawKey =
     (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
     process.env.SUPABASE_PUBLISHABLE_KEY;
-  return { url, key };
+  return { 
+    url: cleanString(rawUrl), 
+    key: cleanString(rawKey) 
+  };
 }
 
 /**
